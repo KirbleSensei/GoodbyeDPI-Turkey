@@ -5,7 +5,14 @@
  *
  */
 
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <stdbool.h>
+#define BOOL bool
+#define TRUE 1
+#define FALSE 0
+#endif
 #include <time.h>
 #include <stdio.h>
 #include <math.h>

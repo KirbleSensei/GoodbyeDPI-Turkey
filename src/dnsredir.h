@@ -1,6 +1,11 @@
 #ifndef _DNSREDIR_H
 #define _DNSREDIR_H
 #include <stdint.h>
+#ifdef _WIN32
+#include "windivert.h"
+#else
+#include "windivert_linux.h"
+#endif
 
 // Connection tracking information for DNS requests
 typedef struct conntrack_info {

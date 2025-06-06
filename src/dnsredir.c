@@ -10,7 +10,11 @@
  * But anyway, it works fine for DNS.
  */
 
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
+#endif
 #include <time.h>
 #include <stdio.h>
 #include "goodbyedpi.h"
@@ -49,6 +53,7 @@ static udp_connrecord_t *conntrack = NULL;
  * Ensures redirected DNS changes take effect immediately
  */
 void flush_dns_cache() {
+#ifdef _WIN32
     INT_PTR WINAPI (*DnsFlushResolverCache)();
 
     HMODULE dnsapi = LoadLibrary("dnsapi.dll");
@@ -62,6 +67,9 @@ void flush_dns_cache() {
     if (DnsFlushResolverCache == NULL || !DnsFlushResolverCache())
         printf("Can't flush DNS cache!");
     FreeLibrary(dnsapi);
+#else
+    system("systemd-resolve --flush-caches >/dev/null 2>&1");
+#endif
 }
 
 /**

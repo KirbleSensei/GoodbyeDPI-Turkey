@@ -10,19 +10,27 @@
 #include <unistd.h>
 #include <string.h>
 #include <getopt.h>
+#ifdef _WIN32
 #include <in6addr.h>
 #include <ws2tcpip.h>
 #include "windivert.h"
+#include "service.h"
+#else
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include "windivert_linux.h"
+#endif
 #include "goodbyedpi.h"
 #include "utils/repl_str.h"
-#include "service.h"
 #include "dnsredir.h"
 #include "ttltrack.h"
 #include "blackwhitelist.h"
 #include "fakepackets.h"
 
 // My mingw installation does not load inet_pton definition for some reason
+#ifdef _WIN32
 WINSOCK_API_LINKAGE INT WSAAPI inet_pton(INT Family, LPCSTR pStringBuf, PVOID pAddr);
+#endif
 
 #define GOODBYEDPI_VERSION "v0.2.3rc3"
 
@@ -650,6 +658,7 @@ int main(int argc, char *argv[]) {
     char *hdr_name_addr = NULL, *hdr_value_addr = NULL;
     unsigned int hdr_value_len;
 
+#ifdef _WIN32
     // Make sure to search DLLs only in safe path, not in current working dir.
     SetDllDirectory("");
     SetSearchPathMode(BASE_SEARCH_PATH_ENABLE_SAFE_SEARCHMODE | BASE_SEARCH_PATH_PERMANENT);
@@ -671,6 +680,7 @@ int main(int argc, char *argv[]) {
         }
         running_from_service = 0;
     }
+#endif
 
     if (filter_string == NULL)
         filter_string = strdup(FILTER_STRING_TEMPLATE);
