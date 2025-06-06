@@ -4,9 +4,15 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#ifdef _WIN32
 #include <in6addr.h>
 #include <ws2tcpip.h>
 #include "windivert.h"
+#else
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include "windivert_linux.h"
+#endif
 #include "goodbyedpi.h"
 
 struct fake_t {

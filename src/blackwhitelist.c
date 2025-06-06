@@ -5,10 +5,19 @@
  * Domain records are added from a text file, where every
  * domain is separated with a new line.
  */
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <stdbool.h>
+#define BOOL bool
+#define TRUE 1
+#define FALSE 0
+#endif
 #include <stdio.h>
 #include "goodbyedpi.h"
 #include "utils/uthash.h"
+#include <string.h>
+#include <sys/types.h>
 #include "utils/getline.h"
 
 // Domain record structure using uthash for hash table implementation
